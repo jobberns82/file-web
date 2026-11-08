@@ -1,0 +1,26 @@
+# Files web 1.0 met een eigen image (geen losse app-map meer nodig).
+name: files-web
+services:
+  files-web:
+    image: ghcr.io/jobberns82/files-web:1.0.0
+    container_name: files-web
+    restart: unless-stopped
+    environment:
+      FM_USER: "JOUW-GEBRUIKERSNAAM"
+      FM_PASS: "VERANDER-DIT-WACHTWOORD"
+      FM_SYSTEEM: "ZimaOS"
+      FM_TMDB: ""
+      FM_OS_KEY: ""
+      FM_OS_USER: ""
+      FM_OS_PASS: ""
+      TZ: "Europe/Amsterdam"
+    ports:
+      - "5580:8080"
+    volumes:
+      - /DATA/AppData/files-web/data:/data
+      - /DATA:/schijven/ZimaOS:rslave
+      - /media/Media:/schijven/Media:rslave
+      - "/media/Media 2:/schijven/Media 2:rslave"
+      - /media/Backup:/schijven/Backup:rslave
+      - /media/Data:/schijven/Data:rslave
+      - /media/Temp:/schijven/Temp:rslave

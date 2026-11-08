@@ -1,0 +1,33 @@
+# Bouwt het image en zet het op ghcr.io/jobberns82/files-web.
+# Draait bij elke wijziging op main, of handmatig via Actions › Run workflow.
+# Nieuwe versie? Pas het nummer in VERSION aan.
+name: Image bouwen
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  packages: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Versie lezen
+        id: v
+        run: echo "versie=$(tr -d ' \n' < VERSION)" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/jobberns82/files-web:latest
+            ghcr.io/jobberns82/files-web:${{ steps.v.outputs.versie }}
